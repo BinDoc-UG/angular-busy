@@ -38,14 +38,14 @@ angular.module('cgBusy').factory('_cgBusyTrackerFactory',['$timeout','$q',functi
                 tracker.durationPromise = $timeout(function(){
                     tracker.durationPromise = null;
                 },parseInt(options.minDuration,10) + (options.delay ? parseInt(options.delay,10) : 0));
-            }            
+            }
         };
 
         tracker.isPromise = function(promiseThing){
             var then = promiseThing && (promiseThing.then || promiseThing.$then ||
                 (promiseThing.$promise && promiseThing.$promise.then));
 
-            return typeof then !== 'undefined';            
+            return typeof then !== 'undefined';
         };
 
         tracker.callThen = function(promiseThing,success,error){
@@ -57,7 +57,7 @@ angular.module('cgBusy').factory('_cgBusyTrackerFactory',['$timeout','$q',functi
             } else if (promiseThing.denodeify){
                 promise = $q.when(promiseThing);
             }
-                       
+
             var then = (promise.then || promise.$then);
 
             then.call(promise,success,error);
@@ -100,8 +100,8 @@ angular.module('cgBusy').factory('_cgBusyTrackerFactory',['$timeout','$q',functi
                 }
                 return tracker.promises.length > 0;
             } else {
-                //if both delay and min duration are set, 
-                //we don't want to initiate the min duration if the 
+                //if both delay and min duration are set,
+                //we don't want to initiate the min duration if the
                 //promise finished before the delay was complete
                 tracker.delayJustFinished = false;
                 if (tracker.promises.length === 0) {
@@ -210,8 +210,8 @@ angular.module('cgBusy').directive('cgBusy',['$compile','$templateCache','cgBusy
                         currentTemplate = options.templateUrl;
                         backdrop = options.backdrop;
 
-                        $http.get(currentTemplate,{cache: $templateCache}).success(function(indicatorTemplate){
-
+                        $http.get(currentTemplate,{cache: $templateCache}).then(function(success){
+			    var indicatorTemplate = success.data;
                             options.backdrop = typeof options.backdrop === 'undefined' ? true : options.backdrop;
 
                             if (options.backdrop){
@@ -231,7 +231,7 @@ angular.module('cgBusy').directive('cgBusy',['$compile','$templateCache','cgBusy
                                 .css('bottom',0);
                             element.append(templateElement);
 
-                        }).error(function(data){
+                        }).catch(function(data) {
                             throw new Error('Template specified for cgBusy ('+options.templateUrl+') could not be loaded. ' + data);
                         });
                     }
