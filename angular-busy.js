@@ -210,8 +210,8 @@ angular.module('cgBusy').directive('cgBusy',['$compile','$templateCache','cgBusy
                         currentTemplate = options.templateUrl;
                         backdrop = options.backdrop;
 
-                        $http.get(currentTemplate,{cache: $templateCache}).then(function(indicatorTemplate){
-
+                        $http.get(currentTemplate,{cache: $templateCache}).then(function(success){
+			    var indicatorTemplate = success.data;
                             options.backdrop = typeof options.backdrop === 'undefined' ? true : options.backdrop;
 
                             if (options.backdrop){
